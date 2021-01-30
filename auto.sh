@@ -5,7 +5,13 @@ domain=$1
 #Passive scan using subenum 
 
 echo "Passive scan starting...."
-./subenum.sh -d $domain -o passive.txt 
+subfinder -d $domain -o subfinder.txt
+assetfinder --subs-only $domain | sort -u > assetfinder.txt
+amass enum -passive -norecursive -noalts -d $domain -o amass.txt
+findomain --quiet -t $domain -u findomain.txt
+cat subfinder.txt assetfinder.txt amass.txt findomain.txt | grep -F ".$domain" | sort -u > passive.txt
+rm subfinder.txt assetfinder.txt amass.txt findomain.txt
+
 echo ""
 #Active Scan ...
 
